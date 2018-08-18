@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+
+spring:
+  #DataBase DataSources
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo_db
+    username: root
+    password: 123456
+    driverClassName: com.mysql.jdbc.Driver
+    max-active: 20
+    max-idle: 10
+    min-idle: 1
+    initial-size: 10
+    tomcat:
+      max-wait: 50000
+
+  thymeleaf:
+    cache: false
+    check-template: true
+    check-template-location: true
+    enabled: true
+    suffix: .html
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /static/**
+
+  jpa:
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
