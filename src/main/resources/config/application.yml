@@ -41,5 +41,11 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: create
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+
+  calulate:
+    high: 3
+    wide: 2
+    radius: 6378137

@@ -18,7 +18,7 @@ class FriendController{
     @RequestMapping("findByName")
     @ResponseBody
     fun finByName(name:String):List<Friend>{
-        return friendMapService.finByName(name);
+        return friendMapService.findByName(name);
     }
 
     @RequestMapping("add")

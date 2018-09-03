@@ -1,17 +1,20 @@
 package cn.jarod.socialnetmap.service.impl
 
 import cn.jarod.socialnetmap.entity.Friend
+import cn.jarod.socialnetmap.entity.TagLink
 import cn.jarod.socialnetmap.entity.Tag
+import cn.jarod.socialnetmap.model.FriendDTO
 import cn.jarod.socialnetmap.repository.FriendRepository
+import cn.jarod.socialnetmap.repository.TagLinkRepository
 import cn.jarod.socialnetmap.repository.TagRepository
 import cn.jarod.socialnetmap.service.IFriendMapService
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import org.slf4j.Logger
+import cn.jarod.socialnetmap.utils.Maplevel
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Example
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.annotation.Propagation
+
 
 
 
@@ -27,13 +30,16 @@ class FriendMapService :IFriendMapService {
     @Autowired
     private lateinit var tagRepository: TagRepository
 
-    @Transactional
-    override open fun add(name:String,lon:Double,lat:Double,openid:Long,tags:Array<String>):String{
+    @Autowired
+    private lateinit var tagLinkRepository: TagLinkRepository
+
+    @Transactional(rollbackFor = arrayOf(Exception::class))
+    override fun add(name:String, lng:Double, lat:Double, openid:Long, tags:Array<String>):String{
         log.info("增加FriendMap数据：Name="+name);
         val friend=Friend(
                 id=null,
                 name = name,
-                lon = lon,
+                lng = lng,
                 lat = lat,
                 openId = openid
         )
@@ -41,15 +47,32 @@ class FriendMapService :IFriendMapService {
         for (tagName in tags){
             val tag = Tag(
                 id = null,
-                name = null,
-                friendId = friend.id
+                tagDisplay = tagName
             )
-            tagRepository.save(tag)
+            tagRepository.findOne(Example.of(tag))
+            if (tag.id==null)
+                tagRepository.save(tag)
+            val friendTag = TagLink(
+                id = null,
+                friendId = friend.id,
+                tagId = tag.id
+            )
+            tagLinkRepository.save(friendTag)
         }
         return "success"
     }
 
-    override fun finByName(name:String):List<Friend>{
+    override fun findByName(name:String):List<Friend>{
         return friendRepository.findByName(name);
+    }
+
+    override fun findByPoiAndMapLevel(lon: Double, lat: Double, level: Int): List<FriendDTO>? {
+        var scale = Maplevel.getScaleFromlevel(level)
+        var maxlon = lon+scale*2
+        var minlon = lon-scale*2
+        var maxlat = lat+scale*3
+        var minlat = lat-scale*3
+        //friendRepository.findByArea(minlon,maxlon,minlat,maxlat)
+        return null;
     }
 }
