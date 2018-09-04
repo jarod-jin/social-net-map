@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service(value="friendMapService")
 @Transactional(readOnly = true)
-class FriendMapService :IFriendMapService {
+open class FriendMapService :IFriendMapService {
 
     private val log = LoggerFactory.getLogger(FriendMapService::class.java)
 

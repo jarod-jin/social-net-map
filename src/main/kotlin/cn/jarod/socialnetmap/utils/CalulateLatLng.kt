@@ -1,36 +1,16 @@
 package cn.jarod.socialnetmap.utils
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.PropertySource
-import org.springframework.stereotype.Component
+import java.math.BigDecimal
+import java.math.RoundingMode
 
-@Component
-@PropertySource(value = "classpath:config/application.yml", ignoreResourceNotFound = true)
-@ConfigurationProperties(prefix = "calulate")
-class CalulateLatLng
+
+
+object CalulateLatLng
 {
 
-    companion object {
-        var high:Int = 0
-        var wide:Int = 0
-        var radius:Int = 0 //地球半径,单位米
-    }
+    private val radius:Int = 6378137 //地球半径,单位米
 
-    @Value("\${high}")
-    fun setHigh(high: Int) {
-        CalulateLatLng.high = high
-    }
-
-    @Value("\${wide}")
-    fun setWide(wide: Int) {
-        CalulateLatLng.wide = wide
-    }
-
-    @Value("\${radius}")
-    fun setRadius(radius: Int) {
-        CalulateLatLng.radius = radius
-    }
+    private val scale:Int = 6
 
     private fun rad(d: Double): Double {
         return d * Math.PI / 180.0
@@ -65,21 +45,18 @@ class CalulateLatLng
         return 1.0
     }
 
-    fun getLatDistance(lat : Double):Double {
-        return 1.0
+
+    /**
+     * @param lat 当前中心纬度
+     * @param maplevel 地图级别
+     * @param high 地图高度为比例尺的倍数
+     * @return 返回最高维度
+     */
+    fun getMaxLatByDistance(lat : Double, maplevel: Int, high: Double):Double {
+        var bd = BigDecimal(lat + high * maplevel * 180 /  Math.PI / radius)
+        bd = bd.setScale(scale, RoundingMode.HALF_UP)
+        return bd.toDouble()
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
