@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import java.net.Inet4Address
 
 @RestController
 @RequestMapping("/friend")
@@ -23,8 +24,8 @@ class FriendController{
 
     @RequestMapping("add")
     @ResponseBody
-    fun add(name:String,lon:Double,lat:Double,openid:Long,tags:Array<String>):String{
-        friendMapService.add(name,lon,lat,openid,tags)
+    fun add(name:String,lon:Double,lat:Double,openid:Long, address: String,tags:Array<String>):String{
+        friendMapService.add(name,lon,lat,openid,address,tags)
         return "success"
     }
 }

@@ -96,8 +96,6 @@ dependencies {
     compile('org.springframework.boot:spring-boot-configuration-processor')
     compile('mysql:mysql-connector-java')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile("io.springfox:springfox-swagger2:${swagger2}")
-    compile("io.springfox:springfox-swagger-ui:${swagger2}")
     //compile("com.alibaba:fastjson:${fastjson}")
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-validation')

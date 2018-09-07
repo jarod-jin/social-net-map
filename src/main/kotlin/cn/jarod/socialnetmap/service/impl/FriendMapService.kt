@@ -34,13 +34,14 @@ open class FriendMapService :IFriendMapService {
     private lateinit var tagLinkRepository: TagLinkRepository
 
     @Transactional(rollbackFor = arrayOf(Exception::class))
-    override fun add(name:String, lng:Double, lat:Double, openid:Long, tags:Array<String>):String{
+    override fun add(name:String, lng:Double, lat:Double, openid:Long, address: String, tags:Array<String>):String{
         log.info("增加FriendMap数据：Name="+name);
         val friend=Friend(
                 id=null,
                 name = name,
                 lng = lng,
                 lat = lat,
+                addr = address,
                 openId = openid
         )
         friendRepository.save(friend)
@@ -66,13 +67,35 @@ open class FriendMapService :IFriendMapService {
         return friendRepository.findByName(name);
     }
 
-    override fun findByPoiAndMapLevel(lon: Double, lat: Double, level: Int): List<FriendDTO>? {
+    override fun findByPoiAndMapLevel(lng: Double, lat: Double, level: Int): List<FriendDTO> {
         var scale = Maplevel.getScaleFromlevel(level)
-        var maxlon = lon+scale*2
-        var minlon = lon-scale*2
+        var maxlng = lng+scale*2
+        var minlng = lng-scale*2
         var maxlat = lat+scale*3
         var minlat = lat-scale*3
-        //friendRepository.findByArea(minlon,maxlon,minlat,maxlat)
-        return null;
+        var list = friendRepository.findByVertex(minlng,maxlng,minlat,maxlat)
+        val listReturn = mutableListOf<FriendDTO>()
+        for (f in list){
+            val taglink =  TagLink(
+                    id = null,
+                    friendId = f.id,
+                    tagId = null
+            )
+            var taglinks = tagLinkRepository.findAll(Example.of(taglink))
+            var tags = arrayListOf<String?>()
+            for ( t in taglinks){
+                var tag = tagRepository.findById(t.tagId).get()
+                tags.add(tag.tagDisplay)
+            }
+            val friendDTO =  FriendDTO(
+                    name = f.name,
+                    lng = f.lng,
+                    lat = f.lat,
+                    addr = f.addr,
+                    tags = tags.toTypedArray()
+            )
+            listReturn.add(friendDTO)
+        }
+        return listReturn;
     }
 }
