@@ -8,7 +8,7 @@ data class Friend (@Id @GeneratedValue(strategy = GenerationType.IDENTITY) var i
                    var lng: Double?,
                    var lat: Double?,
                    var addr: String?,
-                   var openId: Long) {
-    constructor() : this(null,null,null,null,null, 0) {
+                   var openId: Long?) {
+    constructor() : this(null,null,null,null,null, null) {
     }
 }

@@ -10,7 +10,7 @@ object CalulateLatLng
 
     private val R:Int = 6378137 //地球半径,单位米
 
-    private val SCALE:Int = 6
+    private val ACCURACY:Int = 6
 
     private fun rad(d: Double): Double {
         return d * Math.PI / 180.0
@@ -47,7 +47,7 @@ object CalulateLatLng
      */
     fun getDeltaLatByDistance(maplevel: Int, high: Double):Double {
         var bd = BigDecimal(high * maplevel * 180 /  Math.PI / R)
-        bd = bd.setScale(SCALE, RoundingMode.HALF_UP)
+        bd = bd.setScale(ACCURACY, RoundingMode.HALF_UP)
         return bd.toDouble()
     }
 
@@ -59,7 +59,7 @@ object CalulateLatLng
      */
     fun getDeltaLngByDistance(lat: Double, maplevel: Int, wide: Double): Double {
         var bd = BigDecimal(wide * maplevel * 180 * Math.cos(lat) / Math.PI / R)
-        bd = bd.setScale(SCALE, RoundingMode.HALF_UP)
+        bd = bd.setScale(ACCURACY, RoundingMode.HALF_UP)
         return bd.toDouble()
     }
 
