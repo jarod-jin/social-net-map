@@ -33,7 +33,7 @@ class FriendController{
                 openId = openid,
                 tags = tags
         )
-        friendMapService.add(friendDTO)
+        friendMapService.saveOne(friendDTO)
         return "success"
     }
 }
