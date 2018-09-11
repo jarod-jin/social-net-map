@@ -69,9 +69,7 @@ repositories {
 }
 
 ext{
-    swagger2 = '2.9.2'
     junit5 = '5.3.0'
-    fastjson = '1.2.49'
 }
 
 configurations {
@@ -92,21 +90,22 @@ test {
 }
 
 dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-configuration-processor')
-    compile('mysql:mysql-connector-java')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    //compile("com.alibaba:fastjson:${fastjson}")
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
-    compile('org.springframework.boot:spring-boot-devtools')
+
+    runtime('mysql:mysql-connector-java')
+    runtime('org.springframework.boot:spring-boot-devtools')
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
     testCompile("org.junit.jupiter:junit-jupiter-api:${junit5}")
-    testCompile("org.junit.jupiter:junit-jupiter-params:${junit5}")
+    //testCompile("org.junit.jupiter:junit-jupiter-params:${junit5}")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:${junit5}")
 
 }

@@ -59,7 +59,7 @@ class FriendMapServiceTest{
                 name = null,
                 lng = 120.020356,
                 lat = null,
-                addr = "传化大厦",
+                addr = "传化大厦112",
                 openId = 2431829283446,
                 tags = arrayOf("傻瓜","2货","损友")
         )

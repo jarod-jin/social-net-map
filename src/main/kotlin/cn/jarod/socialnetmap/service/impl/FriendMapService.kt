@@ -55,8 +55,9 @@ open class FriendMapService :IFriendMapService {
             var taglinks = tagLinkRepository.findAll(Example.of(taglink))
             var tags = arrayListOf<String?>()
             for ( t in taglinks){
-                var tag = tagRepository.findById(t.tagId).get()
-                tags.add(tag.tagDisplay)
+                var tag = tagRepository.findById(t.id?:0)
+                if (!tag.isPresent())
+                    tags.add(tag.get().tagDisplay)
             }
             val friendDTO =  FriendDTO(
                     id = f.id,
@@ -75,20 +76,20 @@ open class FriendMapService :IFriendMapService {
     @Transactional(rollbackFor = arrayOf(Exception::class))
     override fun saveOne(friendDTO: FriendDTO):String{
         log.info("增加FriendMap数据：Name="+friendDTO.name)
-        var f =friendRepository.findById(if (friendDTO.id ==null) 0 else friendDTO.id)
+        var f = friendRepository.findById(friendDTO.id?:0)
         val friend=Friend(
             id = if (f.isPresent())  friendDTO.id else null,
-            name = if (friendDTO.name==null && f.isPresent()) f.get().name else friendDTO.name,
-            lng = if (friendDTO.lng==null && f.isPresent()) f.get().lng else friendDTO.lng,
-            lat = if (friendDTO.lat==null && f.isPresent()) f.get().lat else friendDTO.lat,
-            addr = if (friendDTO.addr==null && f.isPresent()) f.get().addr else friendDTO.addr,
-            openId = if (friendDTO.openId==null && f.isPresent()) f.get().openId else friendDTO.openId
+            name = getValueNotNull(friendDTO.name,f.get().name,f.isPresent()),
+            lng = getValueNotNull(friendDTO.lng,f.get().lng,f.isPresent()),
+            lat = getValueNotNull(friendDTO.lat,f.get().lat,f.isPresent()),
+            addr = getValueNotNull(friendDTO.addr,f.get().addr,f.isPresent()),
+            openId = getValueNotNull(friendDTO.openId,f.get().openId,f.isPresent())
         )
         friendRepository.save(friend)
         for (tagName in friendDTO.tags.orEmpty()){
             var tag = Tag(
-                    id = null,
-                    tagDisplay = tagName
+                id = null,
+                tagDisplay = tagName
             )
             var tmp = tagRepository.findOne(Example.of(tag))
             if (!tmp.isPresent())
@@ -106,4 +107,10 @@ open class FriendMapService :IFriendMapService {
         }
         return "success"
     }
+
+    fun <T> getValueNotNull(value1: T?, value2: T?,boo: Boolean): T? {
+        if (boo) return value1?:value2 else return value2
+        //if (value1==null && boo) return value2 else return value1
+    }
 }
+

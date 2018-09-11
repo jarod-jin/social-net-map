@@ -25,7 +25,7 @@ class FriendController{
     @ResponseBody
     fun add(name:String,lon:Double,lat:Double,openid:Long, address: String,tags:Array<String?>):String{
         var friendDTO = FriendDTO(
-                id = null,
+                id = 0,
                 name = name,
                 lng = lon,
                 lat = lat,
